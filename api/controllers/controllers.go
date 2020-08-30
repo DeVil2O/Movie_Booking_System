@@ -350,6 +350,21 @@ func UserDetailsTicket(w http.ResponseWriter, r *http.Request) {
 	UserDetailsTickets(adminid, u, w)
 }
 
-func UserDetailsTickets(adminId string, Ticketid uint64, w http.ResponseWriter) {
+func UserDetailsTickets(adminId string, Ticketid uint64, w http.ResponseWriter) []models.Ticket {
+	collection, _ := database.GetDBCollection()
+	var result models.Admin
+	collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
 
+	var res []models.Ticket
+	for i, s := range result.Tickets {
+		fmt.Println(i)
+		if s.TicketId == Ticketid {
+			fmt.Println(s)
+			res = append(res, *s)
+
+			json.NewEncoder(w).Encode(res)
+			return res
+		}
+	}
+	return res
 }
