@@ -3,25 +3,19 @@ package server
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/DeVil2O/moviebookingsystem/api/controllers"
-	"github.com/joho/godotenv"
+	"github.com/gorilla/mux"
 )
 
-var server = controllers.Server{}
-
 func Run() {
+	fmt.Println("Chirag Garg")
+	r := mux.NewRouter()
+	r.HandleFunc("/register", controllers.RegisterHandler).
+		Methods("POST")
+	r.HandleFunc("/login", controllers.LoginHandler).
+		Methods("POST")
 
-	var err error
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error getting environment, not coming through %v", err)
-	} else {
-		fmt.Println("We are getting the environment values")
-	}
-
-	server.Initialize()
-
-	server.Run(":8080")
-
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
