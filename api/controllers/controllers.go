@@ -18,6 +18,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/sony/sonyflake"
 	"go.mongodb.org/mongo-driver/bson"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -160,23 +161,14 @@ func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	adminid := params["adminid"]
 	fmt.Println(adminid)
 
-	err := CreateTickets(adminid, "Chirag Garg", "8218517963")
-	var res models.ResponseResult
-	if err != nil {
-		res.Error = "HouseFull"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-	res.Result = "Ticket Created Successfully"
-	json.NewEncoder(w).Encode(res)
-	return
+	CreateTickets(adminid, "Chirag Garg", "8218517963", w)
 
 }
 
-func CreateTickets(adminId string, Customername string, Phonenumber string) error {
+func CreateTickets(adminId string, Customername string, Phonenumber string, w http.ResponseWriter) error {
 	flake := sonyflake.NewSonyflake(sonyflake.Settings{})
 	id, _ := flake.NextID()
-	ticket := &models.Ticket{id, Customername, Phonenumber, time.Now(), time.Now().Add(180 * time.Minute), time.Now(), false}
+	ticket := &models.Ticket{id, Customername, Phonenumber, time.Now(), time.Now().Add(180 * time.Minute), time.Now(), false, time.Now().Add(8 * time.Hour)}
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		panic(err)
@@ -187,6 +179,8 @@ func CreateTickets(adminId string, Customername string, Phonenumber string) erro
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB("theatrebooking").C("admin")
+
+	var res models.ResponseResult
 
 	cursor := bson.M{"adminid": adminId}
 	fmt.Println(cursor)
@@ -203,16 +197,22 @@ func CreateTickets(adminId string, Customername string, Phonenumber string) erro
 			if erro != nil {
 				panic(erro)
 			}
+			index := mgo.Index{
+				Key:         []string{"tickets.expiredat"},
+				ExpireAfter: time.Hour * 8,
+			}
+			err = c.EnsureIndex(index)
 
 			fmt.Println("***********Ticket Booked*********")
 
+			res.Result = "Ticket Created Successfully"
+			json.NewEncoder(w).Encode(res)
+
 		} else {
 			fmt.Println("********HouseFull*********")
-			err := 1
-			if err == 1 {
-				return fmt.Errorf("Housefull")
-			}
 
+			res.Error = "HouseFull"
+			json.NewEncoder(w).Encode(res)
 		}
 	}
 	return err
@@ -400,25 +400,4 @@ func MarkTicketExpireds(adminId string, Ticketid uint64, w http.ResponseWriter) 
 		panic(erro)
 	}
 
-	// res.Result = fmt.Sprintf("Ticket No. %d  Deleted Successfully", Ticketid)
-
-	// json.NewEncoder(w).Encode(res)
-	// return
-
-	// collection, _ := database.GetDBCollection()
-	// var result models.Admin
-	// collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
-
-	// var res []models.Ticket
-	// for i, s := range result.Tickets {
-	// 	fmt.Println(i)
-	// 	if s.TicketId == Ticketid {
-	// 		fmt.Println(s)
-	// 		res = append(res, *s)
-
-	// 		json.NewEncoder(w).Encode(res)
-	// 		return res
-	// 	}
-	// }
-	// return res
 }

@@ -16,11 +16,14 @@ type ResponseResult struct {
 }
 
 type Ticket struct {
-	TicketId    uint64    `json:"ticketid"`
-	Username    string    `json:"username"`
+	TicketId uint64 `json:"ticketid"`
+	Username string `json:"username"`
+	// MovieName string	`json:"`
 	Phonenumber string    `json:"phonenumber"`
 	StartTime   time.Time `json:"starttime"`
 	EndTime     time.Time `json:endtime`
 	CreatedAt   time.Time `json:createdat`
 	Expired     bool      `json:expired`
+
+	ExpiredAt time.Time `json:expiredat`
 }
