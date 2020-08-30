@@ -339,3 +339,17 @@ func DeleteTickets(adminId string, Ticketid uint64, w http.ResponseWriter) {
 	return
 
 }
+
+func UserDetailsTicket(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	ticketid := params["ticketid"]
+	fmt.Println(adminid)
+
+	u, _ := strconv.ParseUint(ticketid, 10, 64)
+	UserDetailsTickets(adminid, u, w)
+}
+
+func UserDetailsTickets(adminId string, Ticketid uint64, w http.ResponseWriter) {
+
+}
