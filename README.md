@@ -87,16 +87,26 @@ golang.org/x/crypto
 ## Usage
 
 <p align="center">
-    <img src="Adminregistration.png" alt="Logo">
-    <img src="adminaccount.png" alt="Logo">
-    <img src="adminlogin.png" alt="Logo">
-    <img src="housefullon20tickets.png" alt="Logo">
-    <img src="mongodbdatabase.png" alt="Logo">
-    <img src="ticketcreate.png" alt="Logo">
-    <img src="ticketdeletion.png" alt="Logo">
-    <img src="ticketsattime.png" alt="Logo">
-    <img src="timingupdate.png" alt="Logo">
-    <img src="userdetailswithid.png" alt="Logo">
+    <img src="Postman Images/Adminregistration.png" alt="Logo">
+  <p>Admin Registration using Routing through gorilla/mux</p>
+    <img src="Postman Images/adminaccount.png" alt="Logo">
+  <p>Admin Account shown in postman using Routing through gorilla/mux</p>
+    <img src="Postman Images/adminlogin.png" alt="Logo">
+  <p>Admin Login using Routing through gorilla/mux</p>
+    <img src="Postman Images/housefullon20tickets.png" alt="Logo">
+  <p>Showing Housefull on selling maximum of 20 tickets</p>
+    <img src="Postman Images/mongodbdatabase.png" alt="Logo">
+  <p>Database Structure on MongoDB</p>
+    <img src="Postman Images/ticketcreate.png" alt="Logo">
+  <p>Ticket Creation using Routing through gorilla/mux</p>
+    <img src="Postman Images/ticketdeletion.png" alt="Logo">
+  <p>Ticket Deletion using Routing through gorilla/mux</p>
+    <img src="Postman Images/ticketsattime.png" alt="Logo">
+  <p>Tickets shown at a particular time using Routing through gorilla/mux</p>
+    <img src="Postman Images/timingupdate.png" alt="Logo">
+  <p>Updating the timing on the tickets using Routing through gorilla/mux</p>
+    <img src="Postman Images/userdetailswithid.png" alt="Logo">
+  <p>Getting the user details using the ticket id using Routing through gorilla/mux</p>
 </p>
 
 
