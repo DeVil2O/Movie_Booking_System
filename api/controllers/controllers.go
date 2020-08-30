@@ -300,3 +300,42 @@ func GetTickets(adminId string, timings time.Time, w http.ResponseWriter) []mode
 	return res
 
 }
+
+func DeleteTicket(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	ticketid := params["ticketid"]
+	fmt.Println(adminid)
+
+	u, _ := strconv.ParseUint(ticketid, 10, 64)
+	DeleteTickets(adminid, u, w)
+}
+
+func DeleteTickets(adminId string, Ticketid uint64, w http.ResponseWriter) {
+	var res models.ResponseResult
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB("theatrebooking").C("admin")
+
+	cursor := bson.M{"adminid": adminId}
+	fmt.Println(cursor)
+
+	change := bson.M{"$pull": bson.M{"tickets": bson.M{"ticketid": Ticketid}}}
+	erro := c.Update(cursor, change)
+	if erro != nil {
+		panic(erro)
+	}
+
+	res.Result = fmt.Sprintf("Ticket No. %d  Deleted Successfully", Ticketid)
+
+	json.NewEncoder(w).Encode(res)
+	return
+
+}
