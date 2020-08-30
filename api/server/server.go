@@ -21,6 +21,7 @@ func Run() {
 	r.HandleFunc("/login/{adminid}/gettickets/{timings}", controllers.GetTicket).Methods("GET")
 	r.HandleFunc("/login/{adminid}/deletetickets/{ticketid}", controllers.DeleteTicket).Methods("DELETE")
 	r.HandleFunc("/login/{adminid}/userdetailstickets/{ticketid}", controllers.UserDetailsTicket).Methods("GET")
+	r.HandleFunc("/login/{adminid}/markticketexpired/{ticketid}", controllers.MarkTicketExpired).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

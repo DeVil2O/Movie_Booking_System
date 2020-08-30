@@ -368,3 +368,57 @@ func UserDetailsTickets(adminId string, Ticketid uint64, w http.ResponseWriter) 
 	}
 	return res
 }
+
+func MarkTicketExpired(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	ticketid := params["ticketid"]
+	fmt.Println(adminid)
+
+	u, _ := strconv.ParseUint(ticketid, 10, 64)
+	MarkTicketExpireds(adminid, u, w)
+}
+
+func MarkTicketExpireds(adminId string, Ticketid uint64, w http.ResponseWriter) {
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
+
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB("theatrebooking").C("admin")
+
+	cursor := bson.M{"tickets.ticketid": Ticketid}
+	fmt.Println(cursor)
+
+	change := bson.M{"$set": bson.M{"tickets.$.expired": true}}
+	erro := c.Update(cursor, change)
+	if erro != nil {
+		panic(erro)
+	}
+
+	// res.Result = fmt.Sprintf("Ticket No. %d  Deleted Successfully", Ticketid)
+
+	// json.NewEncoder(w).Encode(res)
+	// return
+
+	// collection, _ := database.GetDBCollection()
+	// var result models.Admin
+	// collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+
+	// var res []models.Ticket
+	// for i, s := range result.Tickets {
+	// 	fmt.Println(i)
+	// 	if s.TicketId == Ticketid {
+	// 		fmt.Println(s)
+	// 		res = append(res, *s)
+
+	// 		json.NewEncoder(w).Encode(res)
+	// 		return res
+	// 	}
+	// }
+	// return res
+}
