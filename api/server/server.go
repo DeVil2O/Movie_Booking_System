@@ -16,6 +16,8 @@ func Run() {
 		Methods("POST")
 	r.HandleFunc("/login", controllers.LoginHandler).
 		Methods("POST")
+	r.HandleFunc("/login/{adminid}/createticket", controllers.CreateTicket).Methods("POST")
+	r.HandleFunc("/login/{adminid}/updateticket/{ticketid}", controllers.UpdateTicket).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

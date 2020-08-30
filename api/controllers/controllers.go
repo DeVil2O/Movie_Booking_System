@@ -7,12 +7,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/DeVil2O/moviebookingsystem/api/database"
 	"github.com/DeVil2O/moviebookingsystem/api/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/globalsign/mgo"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/sony/sonyflake"
 	"go.mongodb.org/mongo-driver/bson"
@@ -151,11 +153,27 @@ func setSession(adminid string, ttl time.Duration, response http.ResponseWriter)
 		fmt.Println(cookie.Expires)
 	}
 
-	CreateTickets("mainAdmin", "Chirag Garg", "8218517963")
+}
+
+func CreateTicket(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	fmt.Println(adminid)
+
+	err := CreateTickets(adminid, "Chirag Garg", "8218517963")
+	var res models.ResponseResult
+	if err != nil {
+		res.Error = "HouseFull"
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+	res.Result = "Ticket Created Successfully"
+	json.NewEncoder(w).Encode(res)
+	return
 
 }
 
-func CreateTickets(adminId string, Customername string, Phonenumber string) {
+func CreateTickets(adminId string, Customername string, Phonenumber string) error {
 	flake := sonyflake.NewSonyflake(sonyflake.Settings{})
 	id, _ := flake.NextID()
 	ticket := &models.Ticket{id, Customername, Phonenumber, time.Now(), time.Now().Add(180 * time.Minute), time.Now(), false}
@@ -174,19 +192,78 @@ func CreateTickets(adminId string, Customername string, Phonenumber string) {
 	fmt.Println(cursor)
 
 	change := bson.M{"$push": bson.M{"tickets": ticket}}
-	erro := c.Update(cursor, change)
-	if erro != nil {
-		panic(erro)
+	if err != nil {
+		panic(err)
 	} else {
 		collection, _ := database.GetDBCollection()
 		var result models.Admin
 		err = collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
 		if len(result.Tickets) <= 20 {
+			erro := c.Update(cursor, change)
+			if erro != nil {
+				panic(erro)
+			}
 
 			fmt.Println("***********Ticket Booked*********")
+
 		} else {
 			fmt.Println("********HouseFull*********")
+			err := 1
+			if err == 1 {
+				return fmt.Errorf("Housefull")
+			}
+
 		}
 	}
+	return err
 
+}
+
+func UpdateTicket(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	ticketid := params["ticketid"]
+	fmt.Println(adminid)
+	u, _ := strconv.ParseUint(ticketid, 10, 64)
+	UpdateTicketTimings(adminid, u, w)
+
+}
+
+func UpdateTicketTimings(adminId string, Ticketid uint64, w http.ResponseWriter) {
+	collection, _ := database.GetDBCollection()
+	var result models.Admin
+	collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+	for i, s := range result.Tickets {
+		fmt.Printf("%T\n", s.TicketId)
+		fmt.Println(i)
+		if s.TicketId == Ticketid {
+			fmt.Println(time.Now().Sub(s.StartTime))
+			var res models.ResponseResult
+			if time.Now().Sub(s.StartTime) >= 2400*time.Minute {
+				err, _ := collection.ReplaceOne(context.TODO(), bson.M{"expired": false}, bson.M{"expired": true})
+				if err != nil {
+
+					fmt.Printf("%T\n", s.StartTime)
+					res.Error = "Ticket is expired. Please Buy Another Ticket."
+					json.NewEncoder(w).Encode(res)
+					return
+				}
+			}
+
+			s.StartTime = s.StartTime.Add(30 * time.Minute)
+			fmt.Println(s.StartTime)
+			result, err := collection.UpdateOne(context.TODO(), bson.M{"ticketid": Ticketid}, bson.D{{"$set", bson.D{{"starttime", s.StartTime}}}})
+
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(result)
+
+			res.Result = fmt.Sprintf("Timings Updated Successfully to Start Time %s , End Time %s ", s.StartTime.String(), s.StartTime.Add(180*time.Minute).String())
+
+			json.NewEncoder(w).Encode(res)
+			return
+
+		}
+	}
 }

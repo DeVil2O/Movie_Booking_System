@@ -24,5 +24,6 @@ func GetDBCollection() (*mongo.Collection, error) {
 	}
 
 	collection := client.Database("theatrebooking").Collection("admin")
+
 	return collection, nil
 }
