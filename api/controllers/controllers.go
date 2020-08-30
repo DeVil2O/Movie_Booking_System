@@ -267,3 +267,36 @@ func UpdateTicketTimings(adminId string, Ticketid uint64, w http.ResponseWriter)
 		}
 	}
 }
+
+func GetTicket(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	adminid := params["adminid"]
+	timings := params["timings"]
+	fmt.Println(adminid)
+	layout := "2006-01-02T15:04:05.000Z"
+	t, err := time.Parse(layout, timings)
+	if err != nil {
+		fmt.Println(err)
+	}
+	GetTickets(adminid, t, w)
+}
+
+func GetTickets(adminId string, timings time.Time, w http.ResponseWriter) []models.Ticket {
+	collection, _ := database.GetDBCollection()
+	var result models.Admin
+	collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+
+	var res []models.Ticket
+	for i, s := range result.Tickets {
+		fmt.Println(i)
+		if s.StartTime == timings {
+			fmt.Println(s)
+			res = append(res, *s)
+
+		}
+	}
+
+	json.NewEncoder(w).Encode(res)
+	return res
+
+}
