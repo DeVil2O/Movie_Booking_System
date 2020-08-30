@@ -27,7 +27,7 @@
 
 <p align="center">
   <a href="https://github.com/DeVil2O/Movie_Booking_System">
-    <img src="image.png" alt="Logo" width="80" height="80">
+    <img src="image.png">
   </a>
 
 
