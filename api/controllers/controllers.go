@@ -12,6 +12,7 @@ import (
 	"github.com/DeVil2O/moviebookingsystem/api/database"
 	"github.com/DeVil2O/moviebookingsystem/api/models"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo"
 	"github.com/gorilla/securecookie"
 	"github.com/sony/sonyflake"
 	"go.mongodb.org/mongo-driver/bson"
@@ -158,23 +159,34 @@ func CreateTickets(adminId string, Customername string, Phonenumber string) {
 	flake := sonyflake.NewSonyflake(sonyflake.Settings{})
 	id, _ := flake.NextID()
 	ticket := &models.Ticket{id, Customername, Phonenumber, time.Now(), time.Now().Add(180 * time.Minute), time.Now(), false}
-	collection, err := database.GetDBCollection()
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
 
-	cursor, err := collection.Find(context.TODO(), bson.M{"adminid": adminId})
+	defer session.Close()
 
-	change := bson.M{"$push": bson.M{"admin.$.tickets": ticket}}
-	erro := collection.UpdateOne(cursor, change)
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB("theatrebooking").C("admin")
+
+	cursor := bson.M{"adminid": adminId}
+	fmt.Println(cursor)
+
+	change := bson.M{"$push": bson.M{"tickets": ticket}}
+	erro := c.Update(cursor, change)
 	if erro != nil {
 		panic(erro)
 	} else {
-		fmt.Println("success")
+		collection, _ := database.GetDBCollection()
+		var result models.Admin
+		err = collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+		if len(result.Tickets) <= 20 {
+
+			fmt.Println("***********Ticket Booked*********")
+		} else {
+			fmt.Println("********HouseFull*********")
+		}
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
-	var episodes []bson.M
-	if err = cursor.All(context.TODO(), &episodes); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(episodes)
+
 }
