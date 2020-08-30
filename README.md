@@ -86,6 +86,18 @@ golang.org/x/crypto
 
 ## Usage
 
+<p align="center">
+    <img src="Adminregistration.png" alt="Logo">
+    <img src="adminaccount.png" alt="Logo">
+    <img src="adminlogin.png" alt="Logo">
+    <img src="housefullon20tickets.png" alt="Logo">
+    <img src="mongodbdatabase.png" alt="Logo">
+    <img src="ticketcreate.png" alt="Logo">
+    <img src="ticketdeletion.png" alt="Logo">
+    <img src="ticketsattime.png" alt="Logo">
+    <img src="timingupdate.png" alt="Logo">
+    <img src="userdetailswithid.png" alt="Logo">
+</p>
 
 
 ## RoadMap
