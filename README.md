@@ -88,25 +88,25 @@ golang.org/x/crypto
 
 <p align="center">
     <img src="Postman Images/Adminregistration.png" alt="Logo">
-  <p align="center">Admin Registration using Routing through gorilla/mux</p>
+  <p align="center">*******Admin Registration using Routing through gorilla/mux*******</p>
     <img src="Postman Images/adminaccount.png" alt="Logo">
-  <p align="center">Admin Account shown in postman using Routing through gorilla/mux</p>
+  <p align="center">*******Admin Account shown in postman using Routing through gorilla/mux*******</p>
     <img src="Postman Images/adminlogin.png" alt="Logo">
-  <p align="center">Admin Login using Routing through gorilla/mux</p>
+  <p align="center">*******Admin Login using Routing through gorilla/mux*******</p>
     <img src="Postman Images/housefullon20tickets.png" alt="Logo">
-  <p align="center">Showing Housefull on selling maximum of 20 tickets</p>
+  <p align="center">*******Showing Housefull on selling maximum of 20 tickets*******</p>
     <img src="Postman Images/mongodbdatabase.png" alt="Logo">
-  <p align="center">Database Structure on MongoDB</p>
+  <p align="center">*******Database Structure on MongoDB*******</p>
     <img src="Postman Images/ticketcreate.png" alt="Logo">
-  <p align="center">Ticket Creation using Routing through gorilla/mux</p>
+  <p align="center">*******Ticket Creation using Routing through gorilla/mux*******</p>
     <img src="Postman Images/ticketdeletion.png" alt="Logo">
-  <p align="center">Ticket Deletion using Routing through gorilla/mux</p>
+  <p align="center">*******Ticket Deletion using Routing through gorilla/mux*******</p>
     <img src="Postman Images/ticketsattime.png" alt="Logo">
-  <p align="center">Tickets shown at a particular time using Routing through gorilla/mux</p>
+  <p align="center">*******Tickets shown at a particular time using Routing through gorilla/mux*******</p>
     <img src="Postman Images/timingupdate.png" alt="Logo">
-  <p align="center">Updating the timing on the tickets using Routing through gorilla/mux</p>
+  <p align="center">*******Updating the timing on the tickets using Routing through gorilla/mux*******</p>
     <img src="Postman Images/userdetailswithid.png" alt="Logo">
-  <p align="center">Getting the user details using the ticket id using Routing through gorilla/mux</p>
+  <p align="center">*******Getting the user details using the ticket id using Routing through gorilla/mux*******</p>
 </p>
 
 
